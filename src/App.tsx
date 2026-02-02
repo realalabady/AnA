@@ -503,8 +503,25 @@ export default function App() {
       }
     };
 
+    const handleTouchStart = (event: TouchEvent) => {
+      event.preventDefault();
+      if (!hasStarted) {
+        playBackgroundMusic();
+        setHasStarted(true);
+        return;
+      }
+      if (hasAnimationCompleted && isCandleLit) {
+        setIsCandleLit(false);
+        setFireworksActive(true);
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("touchstart", handleTouchStart, { passive: false });
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("touchstart", handleTouchStart);
+    };
   }, [hasStarted, hasAnimationCompleted, isCandleLit, playBackgroundMusic]);
 
   const handleCardToggle = useCallback((id: string) => {
